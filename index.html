@@ -1401,6 +1401,369 @@ button.text-link {
 .roll__in > span[aria-hidden="true"] { -webkit-user-select: none; user-select: none; }
 
 </style>
+<style id="motion-css">
+/* ===== Motion layer: everything here applies only while .motion-ready is on <html> ===== */
+.progress-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: env(safe-area-inset-top, 0px);
+  height: 2px;
+  z-index: 80;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  pointer-events: none;
+}
+
+/* content eases in as it enters the screen */
+.motion-ready [data-rv] {
+  opacity: 0;
+  transform: translateY(26px);
+  transition: opacity .9s var(--ease) var(--rd, 0s), transform 1.1s var(--ease) var(--rd, 0s);
+}
+.motion-ready [data-rv].is-in { opacity: 1; transform: none; }
+
+/* headings rise line by line, like the name in the hero */
+.motion-ready .rv-line {
+  display: block;
+  overflow: hidden;
+  padding: 0 .16em .12em .06em;
+  margin: 0 -.16em -.12em -.06em;
+}
+.motion-ready .rv-line--inline { display: inline-block; vertical-align: top; }
+.motion-ready .rv-in {
+  display: block;
+  transform: translateY(112%);
+  transition: transform 1.15s var(--ease) var(--ld, 0s);
+}
+.motion-ready .rv-line--inline .rv-in { display: inline-block; }
+.motion-ready .is-in .rv-in { transform: none; }
+
+/* section rules draw across, labels follow */
+.motion-ready .sec-head { position: relative; border-top-color: transparent; }
+.motion-ready .sec-head::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -1px;
+  height: 1px;
+  background: var(--line-strong);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  transition: transform 1.4s var(--ease);
+}
+.motion-ready .sec-head > * {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity .8s var(--ease) .3s, transform .8s var(--ease) .3s;
+}
+.motion-ready .sec-head.is-in::before { transform: scaleX(1); }
+.motion-ready .sec-head.is-in > * { opacity: 1; transform: none; }
+
+/* the hero banner is driven by scroll instead of a fixed loop */
+.motion-ready .hero__marquee .marquee__track { animation: none; }
+
+/* stage photo wipes open and settles */
+.motion-ready .stage__media {
+  clip-path: inset(18% 0 0 0 round var(--radius-l));
+  transition: clip-path 1.5s var(--ease);
+}
+.motion-ready .stage__media.is-in { clip-path: inset(0 0 0 0 round var(--radius-l)); }
+.motion-ready .stage__media img { scale: 1.14; transition: scale 2s var(--ease); }
+.motion-ready .stage__media.is-in img { scale: 1; }
+
+/* journey line fills as you read; milestones light up */
+.motion-ready .journey__list::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 10px;
+  width: 1px;
+  height: calc((100% - 20px) * var(--jp, 0));
+  background: var(--accent);
+}
+.motion-ready .journey__item::before {
+  transition: background-color .5s var(--ease), border-color .5s var(--ease), scale .5s var(--ease);
+}
+.motion-ready .journey__item.is-reached::before {
+  background: var(--accent);
+  border-color: var(--accent);
+  scale: 1.35;
+}
+
+/* about sentence: words light up as you scroll */
+.motion-ready .rv-word { opacity: var(--wo, .18); transition: opacity .25s linear; }
+
+/* project previews tilt toward the pointer */
+.motion-ready .preview > .mock-rx,
+.motion-ready .preview > .mock-vaak {
+  transform: perspective(1000px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translate3d(var(--mx, 0px), var(--my, 0px), 0);
+  transition: transform .7s var(--ease);
+}
+.motion-ready .preview > .mock-paper {
+  transform: perspective(1000px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translate3d(var(--mx, 0px), var(--my, 0px), 0) rotate(-1.4deg);
+  transition: transform .7s var(--ease);
+}
+.motion-ready .work-card__num { transition: color .5s var(--ease), translate .5s var(--ease); }
+.motion-ready .work-card:hover .work-card__num { color: var(--accent); translate: 8px 0; }
+
+/* tab content eases in when you switch */
+.motion-ready .approach__panel:not([hidden]) { animation: rv-panel .6s var(--ease); }
+@keyframes rv-panel { from { opacity: 0; transform: translateY(12px); } }
+
+/* magnetic buttons */
+.motion-ready .btn,
+.motion-ready .nav__link {
+  transition-property: background-color, color, border-color, translate;
+  transition-duration: .35s, .35s, .35s, .5s;
+  transition-timing-function: var(--ease);
+}
+
+/* cursor follower (mouse only) */
+.cursor {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 90;
+  width: 34px;
+  height: 34px;
+  margin: -17px 0 0 -17px;
+  border-radius: 50%;
+  border: 1px solid var(--ink);
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  opacity: 0;
+  color: transparent;
+  font: 500 .7rem/1 var(--mono);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  transition: width .35s var(--ease), height .35s var(--ease), margin .35s var(--ease), background-color .35s var(--ease), border-color .35s var(--ease), color .2s var(--ease), opacity .3s var(--ease);
+}
+.cursor.is-on { opacity: .55; }
+.cursor.is-link {
+  width: 56px;
+  height: 56px;
+  margin: -28px 0 0 -28px;
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  opacity: 1;
+}
+.cursor.is-view {
+  width: 92px;
+  height: 92px;
+  margin: -46px 0 0 -46px;
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--on-ink);
+  opacity: 1;
+}
+
+@media print {
+  .progress-bar, .cursor { display: none !important; }
+  .motion-ready [data-rv],
+  .motion-ready .rv-in,
+  .motion-ready .sec-head > * { opacity: 1 !important; transform: none !important; }
+}
+
+/* ===== Motion layer, part 2 ===== */
+
+/* opening intro: a counter and your name, then the curtain lifts (once per visit) */
+html.intro { overflow: hidden; }
+html.intro:not(.intro-js) body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 199;
+  background: var(--bg);
+}
+html.intro.is-ready .intro-line > span { transform: translateY(108%) !important; transition: none !important; }
+html.intro.is-ready .intro-fade { opacity: 0 !important; transform: translateY(14px) !important; transition: none !important; }
+html.intro.is-ready .hero__media { opacity: 0 !important; transform: translateY(24px) scale(1.02) !important; transition: none !important; }
+.intro-curtain {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  padding: calc(env(safe-area-inset-top, 0px) + 28px) var(--gutter) calc(env(safe-area-inset-bottom, 0px) + 28px);
+  background: var(--bg);
+  color: var(--ink);
+  cursor: pointer;
+  transition: transform 1s var(--ease);
+}
+.intro-curtain.is-out { transform: translateY(-100%); }
+.intro-curtain__name {
+  align-self: center;
+  justify-self: center;
+  overflow: hidden;
+  padding: 0 .2em .12em;
+  font-size: clamp(2.2rem, 6.4vw, 5rem);
+  font-weight: 500;
+  letter-spacing: -.045em;
+  line-height: 1;
+}
+.intro-curtain__name > span { display: inline-block; transform: translateY(115%); animation: ic-rise .9s var(--ease) .1s forwards; }
+.intro-curtain__name .it { font-size: 1.1em; letter-spacing: -.015em; }
+@keyframes ic-rise { to { transform: none; } }
+.intro-curtain__foot { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; }
+.intro-curtain__count {
+  font-size: clamp(3.6rem, 13vw, 10rem);
+  font-weight: 300;
+  line-height: .85;
+  letter-spacing: -.06em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* heartbeat line along the hero's bottom divider */
+.hero__foot { position: relative; }
+.ecg { display: none; }
+.motion-ready .hero__foot { border-top-color: transparent; }
+.motion-ready .ecg {
+  display: block;
+  position: absolute;
+  left: 0;
+  top: -12px;
+  width: 100%;
+  height: 24px;
+  overflow: visible;
+  pointer-events: none;
+}
+.ecg__base { fill: none; stroke: var(--line-strong); stroke-width: 1; }
+.ecg__beat {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 60 1000;
+  stroke-dashoffset: 1060;
+  filter: drop-shadow(0 0 4px var(--accent));
+  animation: ecg 3.6s linear infinite;
+}
+@keyframes ecg { to { stroke-dashoffset: 0; } }
+
+/* hero name: letters thicken near the cursor (variable font) */
+.motion-ready .vw { transition: font-weight .35s var(--ease); }
+
+/* glow that follows the mouse: hero and cards */
+.hero-glow {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 0;
+  width: 680px;
+  height: 680px;
+  margin: -340px 0 0 -340px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--accent-soft), transparent 64%);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .8s var(--ease);
+}
+.motion-ready .hero:hover .hero-glow { opacity: 1; }
+.motion-ready .glow { position: relative; isolation: isolate; }
+.motion-ready .glow::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(280px circle at var(--sx, 50%) var(--sy, 50%), var(--accent-soft), transparent 65%);
+  transition: opacity .45s var(--ease);
+}
+.motion-ready .glow:hover::after { opacity: 1; }
+
+/* buttons fill from where the cursor enters */
+.motion-ready .btn { position: relative; overflow: hidden; isolation: isolate; }
+.motion-ready .btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: var(--ink);
+  clip-path: circle(0 at var(--bx, 50%) var(--by, 50%));
+  transition: clip-path .6s var(--ease);
+}
+.motion-ready .btn--solid::before { background: var(--accent); }
+@media (hover: hover) {
+  .motion-ready .btn:hover::before { clip-path: circle(150% at var(--bx, 50%) var(--by, 50%)); }
+  .motion-ready .btn--ghost:hover { color: var(--on-ink); border-color: var(--ink); }
+  .motion-ready .btn--solid:hover { background: var(--ink); color: var(--on-accent); }
+}
+
+/* links: underline draws in, arrows nudge */
+.motion-ready .nav__link .roll {
+  background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat;
+  transition: background-size .45s var(--ease);
+}
+.motion-ready .nav__link:hover .roll { background-size: 100% 1px; }
+.motion-ready .text-link .arr,
+.motion-ready .link-row a .arr { display: inline-block; transition: translate .35s var(--ease); }
+.motion-ready .text-link:hover .arr,
+.motion-ready .link-row a:hover .arr { translate: 3px -3px; }
+.motion-ready .footer__mark .it { transition: color .5s var(--ease); }
+.motion-ready .footer__mark:hover .it { color: var(--accent); }
+
+/* numbers keep their width while they roll */
+.stat__num, .open-data__nums b { font-variant-numeric: tabular-nums; }
+
+/* skills band between sections */
+.skills-band {
+  display: grid;
+  gap: 4px;
+  padding-block: clamp(18px, 3vw, 34px);
+  overflow: hidden;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.skills-band__track { display: flex; align-items: center; width: max-content; }
+.skills-band__track span {
+  padding: 0 .32em;
+  font-size: clamp(2rem, 5.4vw, 4.8rem);
+  line-height: 1.08;
+  font-weight: 500;
+  letter-spacing: -.045em;
+  white-space: nowrap;
+}
+.skills-band__row--serif span {
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -.01em;
+  color: var(--muted);
+}
+.skills-band__track i { font-style: normal; font-weight: 300; font-size: clamp(1.2rem, 2.8vw, 2.4rem); color: var(--accent); }
+
+/* case studies open as a circle from where you clicked */
+.motion-ready[data-motion="on"] .dialog[open] { animation: none; }
+.motion-ready[data-motion="on"] .dialog[open].is-opening { animation: rv-dlg .75s var(--ease) both; }
+@keyframes rv-dlg {
+  from { clip-path: circle(0 at var(--ox, 50%) var(--oy, 50%)); }
+  to { clip-path: circle(150% at var(--ox, 50%) var(--oy, 50%)); }
+}
+
+@media print {
+  .intro-curtain, .ecg, .hero-glow, .skills-band { display: none !important; }
+}
+</style>
+<script id="motion-head">
+(function () {
+  var d = document.documentElement;
+  try {
+    if (d.getAttribute('data-motion') !== 'off' && !location.hash && !sessionStorage.getItem('ra-intro')) {
+      d.classList.add('intro');
+      sessionStorage.setItem('ra-intro', '1');
+      setTimeout(function () { d.classList.remove('intro', 'intro-js'); }, 5000);
+    }
+  } catch (e) {}
+})();
+</script>
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
@@ -2296,6 +2659,462 @@ button.text-link {
   else ready();
 })();
 
+</script>
+<script id="motion-js">
+(function () {
+  'use strict';
+  var root = document.documentElement;
+  if (!('IntersectionObserver' in window)) { root.classList.remove('intro'); return; }
+  var $ = function (s, c) { return (c || document).querySelector(s); };
+  var $$ = function (s, c) { return Array.prototype.slice.call((c || document).querySelectorAll(s)); };
+  var on = function () { return root.getAttribute('data-motion') !== 'off'; };
+  var mouse = !!(window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches);
+
+  /* ---------- text effects: decoding labels, rolling numbers ---------- */
+  var GLYPHS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#+*';
+  function scramble(el, dur) {
+    if (!el || !on() || el.__scr) return;
+    el.__scr = true;
+    var nodes = [];
+    (function walk(n) {
+      Array.prototype.slice.call(n.childNodes).forEach(function (c) {
+        if (c.nodeType === 3 && c.textContent.trim()) nodes.push({ n: c, t: c.textContent });
+        else if (c.nodeType === 1) walk(c);
+      });
+    })(el);
+    var t0 = performance.now();
+    (function step(now) {
+      var p = Math.min(1, (now - t0) / dur);
+      nodes.forEach(function (o) {
+        var k = Math.floor(p * o.t.length), out = '';
+        for (var i = 0; i < o.t.length; i++) {
+          var ch = o.t[i];
+          out += (i < k || /[\s\/.\u00b7&,]/.test(ch)) ? ch : GLYPHS[(Math.random() * GLYPHS.length) | 0];
+        }
+        o.n.textContent = out;
+      });
+      if (p < 1) requestAnimationFrame(step);
+      else { nodes.forEach(function (o) { o.n.textContent = o.t; }); el.__scr = false; }
+    })(t0);
+  }
+  function roll(el, dur) {
+    if (!el || !on()) return;
+    var tn = Array.prototype.slice.call(el.childNodes).filter(function (c) { return c.nodeType === 3 && /\d/.test(c.textContent); })[0];
+    if (!tn || tn.__roll) return;
+    tn.__roll = true;
+    var final = tn.textContent, t0 = performance.now();
+    (function step(now) {
+      if (now - t0 < dur) {
+        tn.textContent = final.replace(/\d/g, function () { return String((Math.random() * 10) | 0); });
+        requestAnimationFrame(step);
+      } else { tn.textContent = final; tn.__roll = false; }
+    })(t0);
+  }
+
+  /* ---------- opening intro (decided in <head>, once per visit) ---------- */
+  function afterIntro() {
+    setTimeout(function () { $$('.hero__top .label').forEach(function (l) { scramble(l, 900); }); }, 300);
+  }
+  if (root.classList.contains('intro')) {
+    var curtain = document.createElement('div');
+    curtain.className = 'intro-curtain';
+    curtain.setAttribute('aria-hidden', 'true');
+    curtain.innerHTML = '<p class="intro-curtain__name"><span>Rohith <span class="it">Akulapalli</span></span></p>' +
+      '<div class="intro-curtain__foot"><p class="label">Creating a new kind of doctor</p><p class="intro-curtain__count">00</p></div>';
+    document.body.appendChild(curtain);
+    root.classList.add('intro-js');
+    scramble($('.label', curtain), 900);
+    var count = $('.intro-curtain__count', curtain), it0 = performance.now(), introDone = false;
+    var finishIntro = function () {
+      if (introDone) return;
+      introDone = true;
+      curtain.classList.add('is-out');
+      root.classList.remove('intro', 'intro-js');
+      setTimeout(function () { curtain.remove(); }, 1100);
+      afterIntro();
+    };
+    (function step(now) {
+      if (introDone) return;
+      var p = Math.min(1, (now - it0) / 1000);
+      count.textContent = String(Math.round((1 - Math.pow(1 - p, 3)) * 100)).padStart(2, '0');
+      if (p < 1) requestAnimationFrame(step); else setTimeout(finishIntro, 200);
+    })(it0);
+    curtain.addEventListener('click', finishIntro);
+  } else {
+    afterIntro();
+  }
+
+  /* ---------- headings: wrap each line so it can rise ---------- */
+  function split(el, inline) {
+    var parts = [];
+    Array.prototype.slice.call(el.childNodes).forEach(function (n) {
+      if (n.nodeType === 3) { if (n.textContent.trim()) parts.push(n.textContent.trim()); }
+      else parts.push(n);
+    });
+    el.textContent = '';
+    parts.forEach(function (p, i) {
+      if (i) el.appendChild(document.createTextNode(' '));
+      var line = document.createElement('span');
+      line.className = 'rv-line' + (inline ? ' rv-line--inline' : '');
+      var inner = p;
+      if (typeof p === 'string') { inner = document.createElement('span'); inner.textContent = p; }
+      inner.classList.add('rv-in');
+      inner.style.setProperty('--ld', (i * 0.12).toFixed(2) + 's');
+      line.appendChild(inner);
+      el.appendChild(line);
+    });
+    el.setAttribute('data-rv-lines', '');
+  }
+  $$('main .h2').forEach(function (h) { split(h, false); });
+  var mark = $('.footer__mark');
+  if (mark) split(mark, true);
+
+  /* ---------- skills band (decorative; the same skills are listed in "How I work") ---------- */
+  var impact = $('#impact'), bandTracks = [];
+  if (impact) {
+    var band = document.createElement('div');
+    band.className = 'skills-band';
+    band.setAttribute('aria-hidden', 'true');
+    var row = function (items, cls) {
+      var unit = items.map(function (s) { return '<span>' + s + '</span><i>+</i>'; }).join('');
+      return '<div class="skills-band__row ' + cls + '"><div class="skills-band__track">' + unit + unit + unit + '</div></div>';
+    };
+    band.innerHTML = row(['Python', 'Flask', 'scikit-learn', 'XGBoost', 'MFCC features', 'Figma', 'Playwright', 'matplotlib'], 'skills-band__row--sans') +
+      row(['Medicine', 'Machine learning', 'Cancer immunotherapy', 'Voice-based screening', 'Scientific writing', 'NEET 2027'], 'skills-band__row--serif');
+    impact.parentNode.insertBefore(band, impact);
+    bandTracks = $$('.skills-band__track', band);
+  }
+
+  /* ---------- content that eases in ---------- */
+  function tag(sel, step, base) {
+    $$(sel).forEach(function (el, i) {
+      if (el.closest('dialog') || el.hasAttribute('data-rv-lines')) return;
+      el.setAttribute('data-rv', '');
+      var d = (base || 0) + i * (step || 0);
+      if (d) el.style.setProperty('--rd', d.toFixed(2) + 's');
+    });
+  }
+  tag('.stat', 0.1);
+  tag('.split__b > *', 0.1, 0.1);
+  tag('.work-intro > :not(.h2)', 0, 0.2);
+  tag('.work-card .preview');
+  tag('.work-card__body', 0, 0.12);
+  tag('.more > .label');
+  tag('.more-card', 0.12);
+  tag('.accordion');
+  tag('.link-row');
+  tag('.approach__tabs');
+  tag('.approach > div:last-child', 0, 0.15);
+  tag('.open-data > div:first-child');
+  tag('.dataset', 0.05, 0.1);
+  tag('.open-data .note', 0, 0.35);
+  tag('.stage__text .stack > :not(.h2)', 0.1);
+  tag('.stage__lower > *', 0.08);
+  tag('.journey__head > :not(.h2)', 0, 0.2);
+  tag('.journey__item');
+  tag('.contact > :not(.h2)', 0.08);
+  tag('.footer__row, .footer__legal', 0.1);
+
+  var pending = $$('[data-rv], [data-rv-lines], .sec-head, .stage__media');
+  function reveal(t, fx) {
+    if (t.classList.contains('is-in')) return;
+    t.classList.add('is-in');
+    io.unobserve(t);
+    var i = pending.indexOf(t);
+    if (i > -1) pending.splice(i, 1);
+    if (!fx) return;
+    if (t.classList.contains('sec-head')) $$('.label', t).forEach(function (l) { scramble(l, 800); });
+    if (t.classList.contains('stat')) roll($('.stat__num', t), 800);
+    if (t.matches('.open-data > div:first-child')) $$('.open-data__nums b', t).forEach(function (b) { roll(b, 800); });
+  }
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (en) { if (en.isIntersecting) reveal(en.target, true); });
+  }, { rootMargin: '0px 0px -10% 0px', threshold: 0 });
+  pending.forEach(function (t) { io.observe(t); });
+  // safety sweep: when scrolling pauses, reveal anything a fast scroll skipped past
+  var sweepT = 0;
+  function sweep() {
+    var vh = window.innerHeight;
+    pending.slice().forEach(function (t) {
+      var r = t.getBoundingClientRect();
+      if (r.top < vh * 0.9) reveal(t, r.bottom > 0);
+    });
+  }
+
+  /* ---------- about sentence: one span per word ---------- */
+  var lead = $('#about .lead'), words = [];
+  if (lead) {
+    var list = lead.textContent.trim().split(/\s+/);
+    lead.textContent = '';
+    list.forEach(function (w, i) {
+      if (i) lead.appendChild(document.createTextNode(' '));
+      var s = document.createElement('span');
+      s.className = 'rv-word';
+      s.textContent = w;
+      lead.appendChild(s);
+      words.push(s);
+    });
+  }
+
+  /* ---------- hero: heartbeat line, glow, name that reacts ---------- */
+  var hero = $('.hero'), media = $('.hero__media'), title = $('.hero__title'), foot = $('.hero__foot');
+  if (foot) {
+    var NS = 'http://www.w3.org/2000/svg';
+    var ecg = document.createElementNS(NS, 'svg');
+    ecg.setAttribute('class', 'ecg');
+    ecg.setAttribute('aria-hidden', 'true');
+    ecg.setAttribute('preserveAspectRatio', 'none');
+    var ecgBase = document.createElementNS(NS, 'path'), ecgBeat = document.createElementNS(NS, 'path');
+    ecgBase.setAttribute('class', 'ecg__base');
+    ecgBeat.setAttribute('class', 'ecg__beat');
+    ecgBeat.setAttribute('pathLength', '1000');
+    ecg.appendChild(ecgBase);
+    ecg.appendChild(ecgBeat);
+    foot.appendChild(ecg);
+    var drawEcg = function () {
+      var w = Math.max(240, Math.round(foot.clientWidth)), period = w < 600 ? 220 : 320, x = 0, d = 'M0 12';
+      ecg.setAttribute('viewBox', '0 0 ' + w + ' 24');
+      while (x + period * 0.45 + 90 < w) {
+        var b = x + period * 0.45;
+        d += ' L' + b.toFixed(1) + ' 12 q8 -5 16 0 L' + (b + 30).toFixed(1) + ' 12 l4 3 l5 -14 l5 18 l4 -7 L' + (b + 60).toFixed(1) + ' 12 q12 -7 24 0';
+        x += period;
+      }
+      d += ' L' + w + ' 12';
+      ecgBase.setAttribute('d', d);
+      ecgBeat.setAttribute('d', d);
+    };
+    drawEcg();
+    window.addEventListener('resize', drawEcg);
+  }
+  var heroGlow = null, vws = [];
+  if (mouse && hero) {
+    heroGlow = document.createElement('div');
+    heroGlow.className = 'hero-glow';
+    heroGlow.setAttribute('aria-hidden', 'true');
+    hero.insertBefore(heroGlow, hero.firstChild);
+    var nameSpan = $('.hero__title .line:not(.line--2) > span');
+    if (nameSpan) {
+      var letters = nameSpan.textContent.split('');
+      nameSpan.textContent = '';
+      letters.forEach(function (ch) {
+        var s = document.createElement('span');
+        s.className = 'vw';
+        s.textContent = ch;
+        nameSpan.appendChild(s);
+        vws.push(s);
+      });
+      if (title) title.setAttribute('aria-label', 'Rohith Akulapalli');
+      hero.addEventListener('pointermove', function (e) {
+        if (!on()) return;
+        vws.forEach(function (s) {
+          var r = s.getBoundingClientRect();
+          var dx = e.clientX - (r.left + r.width / 2), dy = e.clientY - (r.top + r.height / 2);
+          var p = Math.max(0, 1 - Math.sqrt(dx * dx + dy * dy) / 340);
+          s.style.fontWeight = String(Math.round(500 + 200 * p));
+        });
+      });
+      hero.addEventListener('pointerleave', function () { vws.forEach(function (s) { s.style.fontWeight = ''; }); });
+    }
+  }
+
+  /* ---------- scroll-linked: progress bar, parallax, journey fill, about words ---------- */
+  var bar = document.createElement('div');
+  bar.className = 'progress-bar';
+  bar.setAttribute('aria-hidden', 'true');
+  document.body.appendChild(bar);
+  var jList = $('.journey__list'), jItems = $$('.journey__item');
+  var lastY = window.scrollY, vel = 0, dir = 1, ticking = false;
+  function update() {
+    ticking = false;
+    var y = window.scrollY, vh = window.innerHeight;
+    var max = document.documentElement.scrollHeight - vh;
+    bar.style.transform = 'scaleX(' + (max > 0 ? Math.min(1, y / max) : 0).toFixed(4) + ')';
+    if (!on()) return;
+    if (hero && y < hero.offsetHeight * 1.2) {
+      if (media) media.style.translate = '0 ' + (y * 0.16).toFixed(1) + 'px';
+      if (title) title.style.translate = '0 ' + (-y * 0.06).toFixed(1) + 'px';
+    }
+    if (jList) {
+      var r = jList.getBoundingClientRect();
+      jList.style.setProperty('--jp', Math.max(0, Math.min(1, (vh * 0.6 - r.top) / r.height)).toFixed(4));
+      jItems.forEach(function (it) { it.classList.toggle('is-reached', it.getBoundingClientRect().top + 10 < vh * 0.6); });
+    }
+    if (words.length) {
+      var lr = lead.getBoundingClientRect();
+      var lit = Math.max(0, Math.min(1, (vh * 0.85 - lr.top) / (vh * 0.45))) * words.length;
+      words.forEach(function (w, i) { w.style.setProperty('--wo', Math.max(0.18, Math.min(1, lit - i)).toFixed(2)); });
+    }
+  }
+  window.addEventListener('scroll', function () {
+    var y = window.scrollY;
+    vel = y - lastY;
+    if (vel) dir = vel > 0 ? 1 : -1;
+    lastY = y;
+    if (!ticking) { ticking = true; requestAnimationFrame(update); }
+    kick();
+    clearTimeout(sweepT);
+    sweepT = setTimeout(sweep, 180);
+  }, { passive: true });
+  window.addEventListener('resize', function () { if (!ticking) { ticking = true; requestAnimationFrame(update); } });
+
+  /* ---------- marquees: speed and direction follow your scrolling ---------- */
+  var tracks = [], raf = 0, last = 0, boost = 0;
+  function addTrack(el, secs, copies, opposite) {
+    if (!el) return;
+    var t = { el: el, secs: secs, copies: copies, sign: opposite ? -1 : 1, x: 0, vis: false };
+    tracks.push(t);
+    new IntersectionObserver(function (en) { t.vis = en[0].isIntersecting; kick(); }).observe(el.parentNode);
+  }
+  function frame(now) {
+    raf = 0;
+    if (!on()) { last = 0; return; }
+    var dt = last ? Math.min(0.05, (now - last) / 1000) : 0.016, any = false;
+    last = now;
+    boost = boost * 0.92 + Math.min(6, Math.abs(vel)) * 0.08;
+    vel *= 0.85;
+    tracks.forEach(function (k) {
+      if (!k.vis) return;
+      any = true;
+      var unit = k.el.scrollWidth / k.copies;
+      k.x -= dir * k.sign * (unit / k.secs) * (1 + boost * 0.6) * dt;
+      if (k.x <= -unit) k.x += unit;
+      if (k.x > 0) k.x -= unit;
+      k.el.style.transform = 'translate3d(' + k.x.toFixed(2) + 'px,0,0)';
+    });
+    if (any) raf = requestAnimationFrame(frame); else last = 0;
+  }
+  function kick() { if (!raf && on()) raf = requestAnimationFrame(frame); }
+  addTrack($('.hero__marquee .marquee__track'), 46, 2, false);
+  addTrack(bandTracks[0], 60, 3, false);
+  addTrack(bandTracks[1], 70, 3, true);
+
+  /* ---------- project previews open their case study ---------- */
+  $$('.work-card').forEach(function (card) {
+    var pv = $('.preview', card), btn = $('[data-open]', card);
+    if (!pv || !btn) return;
+    pv.style.cursor = 'pointer';
+    pv.addEventListener('click', function () { btn.click(); });
+  });
+
+  /* ---------- case studies open as a circle from where you clicked ---------- */
+  var clickPt = null, lastReal = 0;
+  document.addEventListener('click', function (e) {
+    var trg = e.target.closest && e.target.closest('[data-open], .work-card .preview');
+    if (!trg) return;
+    if (!e.isTrusted && performance.now() - lastReal < 150) return;
+    if (e.isTrusted) lastReal = performance.now();
+    if (e.detail === 0) {
+      var br = trg.getBoundingClientRect();
+      clickPt = { x: br.left + br.width / 2, y: br.top + br.height / 2 };
+    } else {
+      clickPt = { x: e.clientX, y: e.clientY };
+    }
+    requestAnimationFrame(function () {
+      var d = $('dialog.dialog[open]');
+      if (!d || !on() || !clickPt) return;
+      var r = d.getBoundingClientRect();
+      d.style.setProperty('--ox', Math.max(0, Math.min(r.width, clickPt.x - r.left)).toFixed(0) + 'px');
+      d.style.setProperty('--oy', Math.max(0, Math.min(r.height, clickPt.y - r.top)).toFixed(0) + 'px');
+      d.classList.remove('is-opening');
+      void d.offsetWidth;
+      d.classList.add('is-opening');
+    });
+  }, true);
+  $$('dialog.dialog').forEach(function (d) {
+    d.addEventListener('animationend', function (e) { if (e.animationName === 'rv-dlg') d.classList.remove('is-opening'); });
+    d.addEventListener('close', function () { d.classList.remove('is-opening'); });
+  });
+
+  /* ---------- mouse-only touches ---------- */
+  if (mouse) {
+    $$('.btn, .nav__link').forEach(function (el) {
+      el.addEventListener('pointermove', function (e) {
+        if (!on()) return;
+        var r = el.getBoundingClientRect();
+        el.style.translate = ((e.clientX - r.left - r.width / 2) * 0.22).toFixed(1) + 'px ' + ((e.clientY - r.top - r.height / 2) * 0.32).toFixed(1) + 'px';
+      });
+      el.addEventListener('pointerleave', function () { el.style.translate = ''; });
+    });
+    var origin = function (b, e) {
+      var r = b.getBoundingClientRect();
+      b.style.setProperty('--bx', (e.clientX - r.left).toFixed(0) + 'px');
+      b.style.setProperty('--by', (e.clientY - r.top).toFixed(0) + 'px');
+    };
+    $$('.btn').forEach(function (b) {
+      b.addEventListener('pointerenter', function (e) { origin(b, e); });
+      b.addEventListener('pointerleave', function (e) { origin(b, e); });
+    });
+    $$('.more-card, .event, .accordion, .work-card .preview').forEach(function (c) {
+      c.classList.add('glow');
+      c.addEventListener('pointermove', function (e) {
+        var r = c.getBoundingClientRect();
+        c.style.setProperty('--sx', (e.clientX - r.left).toFixed(0) + 'px');
+        c.style.setProperty('--sy', (e.clientY - r.top).toFixed(0) + 'px');
+      });
+    });
+    $$('.work-card .preview').forEach(function (pv) {
+      pv.addEventListener('pointermove', function (e) {
+        if (!on()) return;
+        var r = pv.getBoundingClientRect();
+        var px = (e.clientX - r.left) / r.width - 0.5, py = (e.clientY - r.top) / r.height - 0.5;
+        pv.style.setProperty('--ry', (px * 9).toFixed(2) + 'deg');
+        pv.style.setProperty('--rx', (-py * 7).toFixed(2) + 'deg');
+        pv.style.setProperty('--mx', (px * 14).toFixed(1) + 'px');
+        pv.style.setProperty('--my', (py * 10).toFixed(1) + 'px');
+      });
+      pv.addEventListener('pointerleave', function () {
+        ['--rx', '--ry', '--mx', '--my'].forEach(function (k) { pv.style.removeProperty(k); });
+      });
+    });
+
+    var cur = document.createElement('div');
+    cur.className = 'cursor';
+    cur.setAttribute('aria-hidden', 'true');
+    cur.textContent = 'View';
+    document.body.appendChild(cur);
+    var cx = -100, cy = -100, tx = -100, ty = -100, cRaf = 0;
+    var follow = function () {
+      cRaf = 0;
+      cx += (tx - cx) * 0.22;
+      cy += (ty - cy) * 0.22;
+      cur.style.transform = 'translate3d(' + cx.toFixed(1) + 'px,' + cy.toFixed(1) + 'px,0)';
+      if (heroGlow) {
+        var hr = hero.getBoundingClientRect();
+        heroGlow.style.transform = 'translate3d(' + (cx - hr.left).toFixed(1) + 'px,' + (cy - hr.top).toFixed(1) + 'px,0)';
+      }
+      if (Math.abs(tx - cx) + Math.abs(ty - cy) > 0.3) cRaf = requestAnimationFrame(follow);
+    };
+    document.addEventListener('pointermove', function (e) {
+      if (!on() || e.pointerType !== 'mouse' || $('dialog[open]')) { cur.className = 'cursor'; return; }
+      tx = e.clientX;
+      ty = e.clientY;
+      if (cx < -50) { cx = tx; cy = ty; }
+      var t = e.target;
+      var view = t.closest && t.closest('.work-card .preview');
+      var link = !view && t.closest && t.closest('a, button, summary, [role="tab"]');
+      cur.className = 'cursor is-on' + (view ? ' is-view' : link ? ' is-link' : '');
+      if (!cRaf) cRaf = requestAnimationFrame(follow);
+    }, { passive: true });
+    document.documentElement.addEventListener('pointerleave', function () { cur.className = 'cursor'; });
+  }
+
+  /* ---------- follow the Motion switch ---------- */
+  function apply() {
+    if (on()) {
+      root.classList.add('motion-ready');
+      kick();
+    } else {
+      root.classList.remove('motion-ready', 'intro', 'intro-js');
+      tracks.forEach(function (k) { k.el.style.transform = ''; k.x = 0; });
+      if (media) media.style.translate = '';
+      if (title) title.style.translate = '';
+      vws.forEach(function (s) { s.style.fontWeight = ''; });
+    }
+    update();
+  }
+  new MutationObserver(apply).observe(root, { attributes: true, attributeFilter: ['data-motion'] });
+  apply();
+})();
 </script>
 </body>
 </html>

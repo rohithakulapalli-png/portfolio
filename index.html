@@ -1786,9 +1786,156 @@ html.intro.is-ready .hero__media { opacity: 0 !important; transform: translateY(
   .intro-curtain, .ecg, .hero-glow, .skills-band { display: none !important; }
 }
 </style>
+<style id="extras-css">
+/* ===== Extras: theme switch, current section, back to top, copy email, live details ===== */
+
+/* light/dark switch */
+.theme-toggle {
+  display: inline-grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid var(--line-strong);
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transition: color .3s var(--ease), border-color .3s var(--ease);
+}
+.theme-toggle:hover { color: var(--ink); border-color: var(--ink); }
+.theme-toggle svg { display: block; transition: rotate .6s var(--ease); }
+.theme-toggle:hover svg { rotate: 25deg; }
+@media (max-width: 920px) { .site-header .theme-toggle { display: none; } }
+::view-transition-old(root),
+::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
+
+/* the menu underlines the section you're reading */
+.nav__link.is-current .roll { background: linear-gradient(currentColor, currentColor) 0 100% / 100% 1px no-repeat; }
+.nav__link.is-current .arr { color: var(--accent); }
+.mobile-menu__list a.is-current { color: var(--accent); }
+
+/* back to top, with a ring that fills as you scroll */
+.to-top-dock {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  z-index: 45;
+  padding: 0 calc(16px + env(safe-area-inset-right, 0px)) calc(16px + env(safe-area-inset-bottom, 0px)) 0;
+  pointer-events: none;
+}
+.to-top {
+  pointer-events: auto;
+  display: block;
+  width: 52px;
+  height: 52px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--bg) 82%, transparent);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  color: var(--ink);
+  cursor: pointer;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(12px) scale(.9);
+  transition: opacity .35s var(--ease), transform .35s var(--ease), visibility 0s linear .35s;
+}
+.to-top.is-shown {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition: opacity .35s var(--ease), transform .35s var(--ease);
+}
+.to-top svg { width: 100%; height: 100%; overflow: visible; }
+.to-top__track { fill: none; stroke: var(--line-strong); stroke-width: 1.5; }
+.to-top__ring {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-dasharray: 100;
+  stroke-dashoffset: calc(100 - var(--p, 0));
+  transform: rotate(-90deg);
+  transform-origin: 50% 50%;
+}
+.to-top__arrow {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: translate .35s var(--ease);
+}
+.to-top:hover .to-top__arrow { translate: 0 -2px; }
+
+/* copy email + toast */
+.copy-btn {
+  display: inline-flex;
+  align-items: center;
+  height: 44px;
+  padding: 0 1rem;
+  border-radius: 999px;
+  border: 1px solid var(--line-strong);
+  background: transparent;
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: .7rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color .3s var(--ease), border-color .3s var(--ease);
+}
+.copy-btn:hover { border-color: var(--ink); }
+.copy-btn.is-done { color: var(--accent); border-color: var(--accent); }
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+  z-index: 95;
+  max-width: calc(100vw - 32px);
+  padding: 12px 18px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--on-ink);
+  box-shadow: var(--shadow);
+  font-size: .9rem;
+  font-weight: 500;
+  pointer-events: none;
+  opacity: 0;
+  translate: -50% 20px;
+  transition: opacity .3s var(--ease), translate .45s var(--ease);
+}
+.toast.is-shown { opacity: 1; translate: -50% 0; }
+
+/* live details: an "available" pulse and local time */
+.pulse-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-right: .7em;
+  border-radius: 50%;
+  background: var(--accent);
+  vertical-align: .05em;
+  animation: pulse-dot 2.2s ease-out infinite;
+}
+@keyframes pulse-dot {
+  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 55%, transparent); }
+  70% { box-shadow: 0 0 0 10px transparent; }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}
+[data-motion="off"] .pulse-dot { animation: none; }
+.local-time { font-variant-numeric: tabular-nums; }
+
+@media print {
+  .to-top-dock, .toast, .theme-toggle, .copy-btn { display: none !important; }
+}
+</style>
 <script id="motion-head">
 (function () {
   var d = document.documentElement;
+  try { var th = localStorage.getItem('ra-theme'); if (th === 'light' || th === 'dark') d.setAttribute('data-theme', th); } catch (e) {}
   try {
     if (d.getAttribute('data-motion') !== 'off' && !location.hash && !sessionStorage.getItem('ra-intro')) {
       d.classList.add('intro');
@@ -3255,6 +3402,174 @@ html.intro.is-ready .hero__media { opacity: 0 !important; transform: translateY(
   }
   new MutationObserver(apply).observe(root, { attributes: true, attributeFilter: ['data-motion'] });
   apply();
+})();
+</script>
+<script id="extras-js">
+(function () {
+  'use strict';
+  var root = document.documentElement;
+  var $ = function (s, c) { return (c || document).querySelector(s); };
+  var $$ = function (s, c) { return Array.prototype.slice.call((c || document).querySelectorAll(s)); };
+  var on = function () { return root.getAttribute('data-motion') !== 'off'; };
+  var darkMq = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+
+  /* ---------- light/dark switch with a circular reveal ---------- */
+  var SUN = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/></svg>';
+  var MOON = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg>';
+  function current() {
+    var t = root.getAttribute('data-theme');
+    if (t === 'light' || t === 'dark') return t;
+    return darkMq && darkMq.matches ? 'dark' : 'light';
+  }
+  var toggles = [];
+  function makeToggle(parent) {
+    if (!parent) return;
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'theme-toggle';
+    parent.appendChild(b);
+    toggles.push(b);
+  }
+  makeToggle($('.site-header__left'));
+  makeToggle($('.mobile-menu__foot'));
+  function label() {
+    var dark = current() === 'dark';
+    toggles.forEach(function (b) {
+      b.innerHTML = dark ? SUN : MOON;
+      b.setAttribute('aria-label', dark ? 'Switch to light theme' : 'Switch to dark theme');
+    });
+  }
+  function setTheme(t) {
+    root.setAttribute('data-theme', t);
+    try { localStorage.setItem('ra-theme', t); } catch (e) {}
+    label();
+  }
+  toggles.forEach(function (b) {
+    b.addEventListener('click', function () {
+      var next = current() === 'dark' ? 'light' : 'dark';
+      if (!document.startViewTransition || !on()) { setTheme(next); return; }
+      var r = b.getBoundingClientRect(), x = r.left + r.width / 2, y = r.top + r.height / 2;
+      var rad = Math.sqrt(Math.pow(Math.max(x, window.innerWidth - x), 2) + Math.pow(Math.max(y, window.innerHeight - y), 2));
+      var vt = document.startViewTransition(function () { setTheme(next); });
+      vt.ready.then(function () {
+        root.animate(
+          { clipPath: ['circle(0px at ' + x + 'px ' + y + 'px)', 'circle(' + rad + 'px at ' + x + 'px ' + y + 'px)'] },
+          { duration: 700, easing: 'cubic-bezier(.2,.7,.1,1)', pseudoElement: '::view-transition-new(root)' }
+        );
+      }).catch(function () {});
+    });
+  });
+  if (darkMq) {
+    if (darkMq.addEventListener) darkMq.addEventListener('change', label);
+    else if (darkMq.addListener) darkMq.addListener(label);
+  }
+  label();
+
+  /* ---------- the menu underlines the section you're reading ---------- */
+  var navLinks = $$('.nav .nav__link[href^="#"], .mobile-menu__list a[href^="#"]');
+  if ('IntersectionObserver' in window && navLinks.length) {
+    var spy = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (!en.isIntersecting) return;
+        var href = '#' + en.target.id;
+        navLinks.forEach(function (a) {
+          var cur = a.getAttribute('href') === href;
+          a.classList.toggle('is-current', cur);
+          if (cur) a.setAttribute('aria-current', 'location'); else a.removeAttribute('aria-current');
+        });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    $$('main > section[id]').forEach(function (s) { spy.observe(s); });
+  }
+
+  /* ---------- back to top, with a progress ring ---------- */
+  var dock = document.createElement('div');
+  dock.className = 'to-top-dock';
+  dock.innerHTML = '<button class="to-top" type="button" aria-label="Back to top"><svg viewBox="0 0 48 48" aria-hidden="true">' +
+    '<circle class="to-top__track" cx="24" cy="24" r="21"/><circle class="to-top__ring" cx="24" cy="24" r="21" pathLength="100"/>' +
+    '<path class="to-top__arrow" d="M24 31V17m-6 6 6-6 6 6"/></svg></button>';
+  document.body.appendChild(dock);
+  var toTop = $('.to-top', dock), pending = false;
+  toTop.addEventListener('click', function (e) {
+    window.scrollTo({ top: 0, behavior: on() ? 'smooth' : 'auto' });
+    if (e.detail === 0) { var w = $('.wordmark'); if (w) w.focus({ preventScroll: true }); }
+  });
+  function tick() {
+    pending = false;
+    var y = window.scrollY, max = document.documentElement.scrollHeight - window.innerHeight;
+    toTop.classList.toggle('is-shown', y > window.innerHeight * 0.9);
+    toTop.style.setProperty('--p', max > 0 ? Math.min(100, y / max * 100).toFixed(1) : '0');
+  }
+  window.addEventListener('scroll', function () { if (!pending) { pending = true; requestAnimationFrame(tick); } }, { passive: true });
+  tick();
+
+  /* ---------- copy email, with a toast ---------- */
+  var toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.setAttribute('role', 'status');
+  toast.setAttribute('aria-live', 'polite');
+  document.body.appendChild(toast);
+  var toastT = 0;
+  function showToast(msg) {
+    toast.textContent = msg;
+    toast.classList.add('is-shown');
+    clearTimeout(toastT);
+    toastT = setTimeout(function () { toast.classList.remove('is-shown'); }, 2400);
+  }
+  var emailLine = $('.contact__email'), emailText = emailLine && $('[data-email-text]', emailLine);
+  if (emailLine && emailText && emailText.textContent.trim()) {
+    var copyBtn = document.createElement('button');
+    copyBtn.type = 'button';
+    copyBtn.className = 'copy-btn';
+    copyBtn.textContent = 'Copy';
+    copyBtn.setAttribute('aria-label', 'Copy email address');
+    emailLine.appendChild(copyBtn);
+    copyBtn.addEventListener('click', function () {
+      var addr = emailText.textContent.trim();
+      var done = function () {
+        copyBtn.textContent = 'Copied';
+        copyBtn.classList.add('is-done');
+        showToast('Email copied: ' + addr);
+        setTimeout(function () { copyBtn.textContent = 'Copy'; copyBtn.classList.remove('is-done'); }, 2000);
+      };
+      var fallback = function () {
+        var ta = document.createElement('textarea');
+        ta.value = addr;
+        ta.setAttribute('readonly', '');
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        var ok = false;
+        try { ok = document.execCommand('copy'); } catch (e) {}
+        ta.remove();
+        if (ok) done(); else showToast('Copy this address: ' + addr);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(addr).then(done, fallback);
+      else fallback();
+    });
+  }
+
+  /* ---------- live details: "available" pulse and local time ---------- */
+  $$('.contact > .label').forEach(function (l) {
+    if (/open to/i.test(l.textContent) && !$('.pulse-dot', l)) {
+      var dot = document.createElement('span');
+      dot.className = 'pulse-dot';
+      dot.setAttribute('aria-hidden', 'true');
+      l.insertBefore(dot, l.firstChild);
+    }
+  });
+  var place = $$('.footer__legal .label').filter(function (l) { return /Nalgonda/.test(l.textContent); })[0];
+  if (place && window.Intl && Intl.DateTimeFormat) {
+    try {
+      var fmt = new Intl.DateTimeFormat('en-IN', { timeZone: 'Asia/Kolkata', hour: 'numeric', minute: '2-digit', hour12: true });
+      place.innerHTML = 'Nalgonda, India · <span class="local-time"></span> ↗ The world';
+      var clock = $('.local-time', place);
+      var tickClock = function () { clock.textContent = fmt.format(new Date()).replace(/\s?([ap])\.?m\.?$/i, ' $1m') + ' IST'; };
+      tickClock();
+      setInterval(tickClock, 15000);
+    } catch (e) {}
+  }
 })();
 </script>
 </body>

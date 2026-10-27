@@ -860,6 +860,39 @@ body.menu-open .mobile-menu {
 }
 .mock-rx__mods li span:last-child { font-family: var(--mono); font-size: .8em; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
 .mock-rx__mods li.is-on span:last-child { color: var(--accent); }
+
+/* ---------- diabetic retinopathy preview ---------- */
+.mock-dr {
+  position: absolute;
+  inset: 13% 7% 13%;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  border-radius: 14px;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+  font-size: 13px;
+  font-size: clamp(9px, 1.95cqw, 14px);
+  overflow: hidden;
+}
+.mock-dr__top { display: flex; justify-content: space-between; align-items: center; gap: 1em; padding: 1em 1.3em; border-bottom: 1px solid var(--line); }
+.mock-dr__logo { font-weight: 600; letter-spacing: -.02em; }
+.mock-dr__pill { font-family: var(--mono); font-size: .78em; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.mock-dr__body { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 1.4em; padding: 1em 1.3em; min-height: 0; }
+.mock-dr__eye { display: block; width: 34cqw; max-width: 100%; height: auto; }
+.mock-dr__rows { list-style: none; margin: 0; padding: 0; display: grid; align-content: center; gap: .2em; min-width: 0; }
+.mock-dr__rows li { display: flex; justify-content: space-between; align-items: baseline; gap: .8em; padding: .75em 0; border-bottom: 1px dashed var(--line-strong); }
+.mock-dr__rows li span:last-child { font-family: var(--mono); font-size: .8em; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); text-align: right; }
+.mock-dr__rows li.is-on span:last-child { color: var(--accent); }
+.mock-dr__foot { padding: .9em 1.3em; border-top: 1px solid var(--line); color: var(--muted); line-height: 1.4; }
+@container (max-width: 560px) {
+  .mock-dr { inset: 52px 4% 14px; }
+  .mock-dr__pill, .mock-dr__foot { display: none; }
+  .mock-dr__body { gap: .9em; }
+  .mock-dr__eye { width: 40cqw; }
+  .mock-dr__rows li { padding: .5em 0; }
+  .mock-dr__rows li:not(.is-on) { display: none; }
+}
 .mock-rx__foot {
   padding: .9em 1.3em;
   border-top: 1px solid var(--line);
@@ -1497,6 +1530,7 @@ button.text-link {
 .motion-ready .rv-word { opacity: var(--wo, .18); transition: opacity .25s linear; }
 
 /* project previews tilt toward the pointer */
+.motion-ready .preview > .mock-dr,
 .motion-ready .preview > .mock-rx,
 .motion-ready .preview > .mock-vaak {
   transform: perspective(1000px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translate3d(var(--mx, 0px), var(--my, 0px), 0);
@@ -1898,7 +1932,7 @@ html.intro.is-ready .hero__media { opacity: 0 !important; transform: translateY(
 
     <div class="work-intro">
       <h2 class="h2" id="work-title">An idea is a hypothesis. <span class="it">This is the evidence.</span></h2>
-      <p class="body-copy lead">From a tool that listens to a cough to a review of cancer nanobodies. A few things I’ve built, tested and put in front of judges.</p>
+      <p class="body-copy lead">From a tool that listens to a cough to a model that reads retina photos and a review of cancer nanobodies. A few things I’ve built, tested and put in front of judges.</p>
     </div>
 
     <div class="work-list">
@@ -1946,7 +1980,72 @@ html.intro.is-ready .hero__media { opacity: 0 !important; transform: translateY(
         </div>
       </article>
 
-      <!-- 02 Nanobody review -->
+      <!-- 02 Diabetic retinopathy -->
+      <article class="work-card" aria-labelledby="w-dr-title">
+        <div class="preview" role="img" aria-label="Illustration of the screening app: a retina photo with a heatmap over the lesions, and a result panel suggesting referral to an eye doctor.">
+          <div class="preview__tags preview__tags--top" aria-hidden="true">
+            <span class="chip">Version 2</span>
+            <span class="chip chip--accent"><span class="dot"></span>Externally tested</span>
+          </div>
+          <div class="mock-dr" aria-hidden="true">
+            <div class="mock-dr__top">
+              <span class="mock-dr__logo">Retina screen</span>
+              <span class="mock-dr__pill">Screening, not diagnosis</span>
+            </div>
+            <div class="mock-dr__body">
+              <svg class="mock-dr__eye" viewBox="0 0 200 200" aria-hidden="true">
+                <defs>
+                  <radialGradient id="drcard-fundus" cx="45%" cy="45%" r="62%">
+                    <stop offset="0" stop-color="#E8823F"/>
+                    <stop offset=".65" stop-color="#C2541F"/>
+                    <stop offset="1" stop-color="#7A2A10"/>
+                  </radialGradient>
+                  <radialGradient id="drcard-heat" cx="50%" cy="50%" r="50%">
+                    <stop offset="0" stop-color="#FFE45C" stop-opacity=".85"/>
+                    <stop offset=".45" stop-color="#FF8A00" stop-opacity=".5"/>
+                    <stop offset="1" stop-color="#FF3D00" stop-opacity="0"/>
+                  </radialGradient>
+                </defs>
+                <circle cx="100" cy="100" r="94" fill="url(#drcard-fundus)"/>
+                <circle cx="143" cy="92" r="15" fill="#F6D58E"/>
+                <g fill="none" stroke="#8E2410" stroke-width="2.4" stroke-linecap="round" opacity=".85">
+                  <path d="M143 92 C120 70, 95 56, 52 46"/>
+                  <path d="M143 92 C118 112, 92 132, 50 150"/>
+                  <path d="M143 92 C130 60, 121 35, 113 12"/>
+                  <path d="M143 92 C131 125, 125 152, 119 186"/>
+                  <path d="M100 62 C86 74, 70 80, 28 90"/>
+                  <path d="M98 121 C84 111, 66 108, 24 112"/>
+                </g>
+                <g fill="#5A0F06"><circle cx="78" cy="96" r="2.6"/><circle cx="86" cy="108" r="2"/><circle cx="70" cy="114" r="2.4"/><circle cx="92" cy="90" r="1.8"/></g>
+                <g fill="#F7E3A3"><circle cx="82" cy="84" r="2.2"/><circle cx="96" cy="101" r="1.8"/><circle cx="74" cy="103" r="1.6"/></g>
+                <ellipse cx="82" cy="100" rx="36" ry="30" fill="url(#drcard-heat)"/>
+              </svg>
+              <ul class="mock-dr__rows">
+                <li class="is-on"><span>Referral</span><span>See an eye doctor</span></li>
+                <li><span>Referral score</span><span>0.81</span></li>
+                <li><span>Photo quality</span><span>Passed</span></li>
+              </ul>
+            </div>
+            <p class="mock-dr__foot">AUC 0.983 on unseen photos · 0.949 at an outside hospital</p>
+          </div>
+          <div class="preview__tags preview__tags--bottom" aria-hidden="true">
+            <span class="chip">Medical imaging &amp; deep learning</span>
+            <span class="chip">External validation</span>
+          </div>
+        </div>
+        <div class="work-card__body">
+          <p class="work-card__num" aria-hidden="true">02</p>
+          <p class="label">Medical imaging &amp; deep learning</p>
+          <h3 class="h3" id="w-dr-title">Diabetic retinopathy detection from retina photos</h3>
+          <p class="body-copy">A deep-learning model that reads a photo of the back of the eye and suggests whether a person with diabetes should see an eye doctor. It reached an AUC of 0.983 on unseen photos and 0.949 at a hospital it had never seen, and a test I built caught a camera shortcut when I added more data.</p>
+          <div class="work-card__actions">
+            <button class="btn btn--ghost" type="button" data-open="dr"><span class="roll"><span class="roll__in"><span>Read the case study</span><span aria-hidden="true">Read the case study</span></span></span></button>
+            <a class="btn btn--ghost" href="#work" data-proof="dr-report" hidden>Project report <span class="arr" aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </article>
+
+      <!-- 03 Nanobody review -->
       <article class="work-card" aria-labelledby="w2-title">
         <div class="preview" role="img" aria-label="Illustration of the review manuscript’s title page with a three-panel graphical abstract.">
           <div class="preview__tags preview__tags--top" aria-hidden="true">
@@ -1986,7 +2085,7 @@ html.intro.is-ready .hero__media { opacity: 0 !important; transform: translateY(
           </div>
         </div>
         <div class="work-card__body">
-          <p class="work-card__num" aria-hidden="true">02</p>
+          <p class="work-card__num" aria-hidden="true">03</p>
           <p class="label">Research &amp; writing</p>
           <h3 class="h3" id="w2-title">Engineering immune checkpoint blockade nanobodies for cancer therapy</h3>
           <p class="body-copy">A narrative review of how nanobodies are being engineered to help the immune system fight cancer, from bispecific designs to nanoparticle delivery.</p>
@@ -1997,7 +2096,7 @@ html.intro.is-ready .hero__media { opacity: 0 !important; transform: translateY(
         </div>
       </article>
 
-      <!-- 03 VaakAI -->
+      <!-- 04 VaakAI -->
       <article class="work-card" aria-labelledby="w3-title">
         <div class="preview" role="img" aria-label="Illustration of a VaakAI practice session with filler words highlighted in the transcript.">
           <div class="preview__tags preview__tags--top" aria-hidden="true">
@@ -2026,7 +2125,7 @@ html.intro.is-ready .hero__media { opacity: 0 !important; transform: translateY(
           </div>
         </div>
         <div class="work-card__body">
-          <p class="work-card__num" aria-hidden="true">03</p>
+          <p class="work-card__num" aria-hidden="true">04</p>
           <p class="label">Speech &amp; feedback</p>
           <h3 class="h3" id="w3-title">VaakAI: a speech coach</h3>
           <p class="body-copy">Measures speaking pace, catches filler words and scores vocabulary, then gives feedback. My first Flask app, and the project that brought me to the KRITI Initiative.</p>
@@ -2043,7 +2142,7 @@ html.intro.is-ready .hero__media { opacity: 0 !important; transform: translateY(
       <p class="label"><strong>More ways I build</strong></p>
       <div class="more__grid">
         <div class="more-card">
-          <p class="label"><strong>04</strong> / Health app prototype</p>
+          <p class="label"><strong>05</strong> / Health app prototype</p>
           <h3 class="h3">Sana <span class="it">prototype</span></h3>
           <p class="body-copy">An interactive AI health app prototype with onboarding, chat, a symptom checker, reports and disease-prediction screens.</p>
           <div class="work-card__actions">
@@ -2052,7 +2151,7 @@ html.intro.is-ready .hero__media { opacity: 0 !important; transform: translateY(
           </div>
         </div>
         <div class="more-card">
-          <p class="label"><strong>05</strong> / Materials science</p>
+          <p class="label"><strong>06</strong> / Materials science</p>
           <h3 class="h3">Waste2Wrap <span class="it">packaging</span></h3>
           <p class="body-copy">Biodegradable packaging made from potato peel starch, eggshell powder and banana fibre, prepared for RBVP 2025–26.</p>
           <div class="work-card__actions">
@@ -2119,7 +2218,7 @@ html.intro.is-ready .hero__media { opacity: 0 !important; transform: translateY(
           </ol>
           <p class="lead">I pick a problem a doctor would recognise, keep every speaker’s recordings on one side of the split, and design the output as a referral rather than a diagnosis.</p>
           <ul class="tags" aria-label="Tools">
-            <li class="tag">Python</li><li class="tag">Flask</li><li class="tag">scikit-learn</li><li class="tag">XGBoost</li><li class="tag">MFCC &amp; spectral features</li><li class="tag">HTML, CSS &amp; JavaScript</li><li class="tag">Figma</li>
+            <li class="tag">Python</li><li class="tag">Flask</li><li class="tag">scikit-learn</li><li class="tag">XGBoost</li><li class="tag">PyTorch</li><li class="tag">EfficientNet &amp; Grad-CAM</li><li class="tag">MFCC &amp; spectral features</li><li class="tag">HTML, CSS &amp; JavaScript</li><li class="tag">Figma</li>
           </ul>
           <button class="text-link" type="button" data-open="voicerx">Explore VoiceRx <span class="arr" aria-hidden="true">↗</span></button>
         </div>
@@ -2261,7 +2360,7 @@ html.intro.is-ready .hero__media { opacity: 0 !important; transform: translateY(
         </li>
         <li class="journey__item is-now">
           <p class="label">Today</p>
-          <div><h3 class="h3">Class 12, and VoiceRx v2.</h3><p>Preparing for NEET while rebuilding VoiceRx with honest, subject-level evaluation.</p></div>
+          <div><h3 class="h3">Class 12, and VoiceRx v2.</h3><p>Preparing for NEET while rebuilding VoiceRx with honest, subject-level evaluation, and testing a diabetic retinopathy model at an outside hospital.</p></div>
         </li>
         <li class="journey__item is-next">
           <p class="label">Next</p>
@@ -2357,9 +2456,50 @@ html.intro.is-ready .hero__media { opacity: 0 !important; transform: translateY(
   </div>
 </dialog>
 
+<dialog class="dialog" id="dlg-dr" aria-labelledby="dlg-dr-title">
+  <div class="dialog__head">
+    <p class="label"><strong>02</strong> / Medical imaging &amp; deep learning</p>
+    <button class="dialog__close" type="button" data-close aria-label="Close"><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M1 1l12 12M13 1L1 13" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></button>
+  </div>
+  <div class="dialog__scroll">
+    <h2 class="h2" id="dlg-dr-title">Diabetic retinopathy <span class="it">detection from retina photos</span></h2>
+    <dl class="meta">
+      <div><dt class="label">Role</dt><dd>Led the project, working with an AI coding assistant</dd></div>
+      <div><dt class="label">Status</dt><dd>Research prototype, tested at an outside hospital (October 2026)</dd></div>
+      <div><dt class="label">Data</dt><dd>APTOS 2019 for training, DDR in later versions, and IDRiD kept aside as an outside test</dd></div>
+      <div><dt class="label">Stack</dt><dd>Python, PyTorch, EfficientNet-B4, OpenCV, Grad-CAM, Gradio, Kaggle GPUs</dd></div>
+    </dl>
+    <div class="dlg-section">
+      <h3>The question</h3>
+      <p>Diabetic retinopathy can quietly take a person’s sight, yet most of that loss can be prevented if it’s caught early. Screening needs specialists to read retina photos, and there aren’t nearly enough of them. Could a model flag the photos that need a doctor, so that many more people get checked?</p>
+    </div>
+    <div class="dlg-section">
+      <h3>What I built</h3>
+      <p>A pipeline that crops each photo to the retina, evens out the lighting and scores it with an EfficientNet-B4 network. It suggests whether to refer, shows a heatmap of what drove the score and checks photo quality. The referral threshold was locked on validation data before any test result was seen, and a small web app lets anyone try it with a photo.</p>
+    </div>
+    <div class="dlg-section">
+      <h3>Results</h3>
+      <ul>
+        <li>On 349 unseen APTOS photos: AUC 0.983, catching 86% of the eyes that needed referral and clearing 97% of those that didn’t.</li>
+        <li>At an outside hospital with a different camera (516 IDRiD photos): AUC 0.949, but only 75% of referable eyes caught at the original threshold.</li>
+        <li>Re-tuning the threshold with that hospital’s own photos brought sensitivity back to 91%, at the cost of more false alarms.</li>
+      </ul>
+    </div>
+    <div class="dlg-section">
+      <h3>What I learned</h3>
+      <p>Adding 12,522 photos from 42 kinds of camera made the model worse at the outside hospital, not better. A rim test I built showed why: the model had learned to read the edge of the photo, a sign of which camera took it rather than of disease. Hiding the rim won back part of the loss, but the simpler APTOS-only model is still the one I’d use. More data only helps if you check what the model learns from it.</p>
+    </div>
+    <div class="dlg-section">
+      <h3>Datasets</h3>
+      <p>APTOS 2019 Blindness Detection (Aravind Eye Hospital, via Kaggle); DDR (147 hospitals across China); and IDRiD (an eye clinic in Nanded, India), used only as the outside test.</p>
+    </div>
+    <p class="dlg-note">This is a student research project, not a medical device. It hasn’t been tested on patients in a clinic or reviewed by any regulator.</p>
+  </div>
+</dialog>
+
 <dialog class="dialog" id="dlg-nanobody" aria-labelledby="dlg-nanobody-title">
   <div class="dialog__head">
-    <p class="label"><strong>02</strong> / Research &amp; writing</p>
+    <p class="label"><strong>03</strong> / Research &amp; writing</p>
     <button class="dialog__close" type="button" data-close aria-label="Close"><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M1 1l12 12M13 1L1 13" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></button>
   </div>
   <div class="dialog__scroll">
@@ -2392,7 +2532,7 @@ html.intro.is-ready .hero__media { opacity: 0 !important; transform: translateY(
 
 <dialog class="dialog" id="dlg-vaakai" aria-labelledby="dlg-vaakai-title">
   <div class="dialog__head">
-    <p class="label"><strong>03</strong> / Speech &amp; feedback</p>
+    <p class="label"><strong>04</strong> / Speech &amp; feedback</p>
     <button class="dialog__close" type="button" data-close aria-label="Close"><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M1 1l12 12M13 1L1 13" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></button>
   </div>
   <div class="dialog__scroll">
@@ -2421,7 +2561,7 @@ html.intro.is-ready .hero__media { opacity: 0 !important; transform: translateY(
 
 <dialog class="dialog" id="dlg-sana" aria-labelledby="dlg-sana-title">
   <div class="dialog__head">
-    <p class="label"><strong>04</strong> / Health app prototype</p>
+    <p class="label"><strong>05</strong> / Health app prototype</p>
     <button class="dialog__close" type="button" data-close aria-label="Close"><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M1 1l12 12M13 1L1 13" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></button>
   </div>
   <div class="dialog__scroll">
@@ -2448,7 +2588,7 @@ html.intro.is-ready .hero__media { opacity: 0 !important; transform: translateY(
 
 <dialog class="dialog" id="dlg-waste2wrap" aria-labelledby="dlg-waste2wrap-title">
   <div class="dialog__head">
-    <p class="label"><strong>05</strong> / Materials science</p>
+    <p class="label"><strong>06</strong> / Materials science</p>
     <button class="dialog__close" type="button" data-close aria-label="Close"><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M1 1l12 12M13 1L1 13" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></button>
   </div>
   <div class="dialog__scroll">
@@ -2527,6 +2667,7 @@ html.intro.is-ready .hero__media { opacity: 0 !important; transform: translateY(
 
   /* ---------- proof links: each button appears once its link is filled in ---------- */
   var PROOF = {
+    'dr-report': 'https://claude.ai/artifact/2mgxEr9kwTCFBK4WGhAtgP', // diabetic retinopathy project report
     'voicerx-repo': '',        // GitHub repo for the VoiceRx v2 pipeline
     'voicerx-poster': '',      // PRAVAH 2026 poster (PDF)
     'nanobody-abstract': '',   // abstract and figures (full text stays private while under review)
@@ -2779,8 +2920,8 @@ html.intro.is-ready .hero__media { opacity: 0 !important; transform: translateY(
       var unit = items.map(function (s) { return '<span>' + s + '</span><i>+</i>'; }).join('');
       return '<div class="skills-band__row ' + cls + '"><div class="skills-band__track">' + unit + unit + unit + '</div></div>';
     };
-    band.innerHTML = row(['Python', 'Flask', 'scikit-learn', 'XGBoost', 'MFCC features', 'Figma', 'Playwright', 'matplotlib'], 'skills-band__row--sans') +
-      row(['Medicine', 'Machine learning', 'Cancer immunotherapy', 'Voice-based screening', 'Scientific writing', 'NEET 2027'], 'skills-band__row--serif');
+    band.innerHTML = row(['Python', 'PyTorch', 'Flask', 'scikit-learn', 'XGBoost', 'EfficientNet', 'Grad-CAM', 'MFCC features', 'Figma'], 'skills-band__row--sans') +
+      row(['Medicine', 'Machine learning', 'Medical imaging', 'Cancer immunotherapy', 'Voice-based screening', 'Scientific writing', 'NEET 2027'], 'skills-band__row--serif');
     impact.parentNode.insertBefore(band, impact);
     bandTracks = $$('.skills-band__track', band);
   }

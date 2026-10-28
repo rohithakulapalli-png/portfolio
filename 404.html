@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Page not found | Rohith Akulapalli</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23030303'/%3E%3Ctext x='32' y='42' text-anchor='middle' font-family='Georgia,serif' font-style='italic' font-size='30' fill='%235EEAD4'%3ERA%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&amp;family=Geist+Mono&amp;family=Instrument+Serif:ital@1&amp;display=swap">
+<script>
+try { var t = localStorage.getItem('ra-theme'); if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t); } catch (e) {}
+</script>
+<style>
+:root {
+  --bg: #F2F1EC; --ink: #0D0D0C; --muted: #5E5D58; --line: rgba(13, 13, 12, .16); --accent: #0E6B64; --on-ink: #F2F1EC;
+  color-scheme: light;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --bg: #030303; --ink: #EFEDE7; --muted: #9A9893; --line: rgba(239, 237, 231, .16); --accent: #5EEAD4; --on-ink: #030303; color-scheme: dark; }
+}
+:root[data-theme="dark"] { --bg: #030303; --ink: #EFEDE7; --muted: #9A9893; --line: rgba(239, 237, 231, .16); --accent: #5EEAD4; --on-ink: #030303; color-scheme: dark; }
+* { box-sizing: border-box; }
+html { height: 100%; }
+body {
+  margin: 0;
+  min-height: 100%;
+  display: grid;
+  place-items: center;
+  padding: 24px clamp(20px, 5vw, 56px);
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+main { width: min(680px, 100%); display: grid; gap: 24px; }
+.label {
+  margin: 0;
+  font-family: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: .72rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+h1 { margin: 0; font-size: clamp(2.8rem, 10vw, 6rem); line-height: .95; letter-spacing: -.045em; font-weight: 500; }
+h1 em { display: block; font-family: "Instrument Serif", Georgia, "Times New Roman", serif; font-style: italic; font-weight: 400; letter-spacing: -.015em; }
+p { margin: 0; max-width: 44ch; color: var(--muted); font-size: 1.05rem; line-height: 1.55; }
+svg { display: block; width: 100%; height: 56px; overflow: visible; }
+.base { fill: none; stroke: var(--line); stroke-width: 1.5; vector-effect: non-scaling-stroke; }
+.beat {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+  stroke-dasharray: 70 1000;
+  stroke-dashoffset: 1070;
+  filter: drop-shadow(0 0 4px var(--accent));
+  animation: beat 3s linear infinite;
+}
+@keyframes beat { to { stroke-dashoffset: 0; } }
+@media (prefers-reduced-motion: reduce) { .beat { animation: none; stroke-dasharray: none; filter: none; } }
+a {
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: .55em;
+  height: 52px;
+  padding: 0 1.5rem;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--on-ink);
+  font-weight: 500;
+  text-decoration: none;
+  transition: background-color .3s ease, color .3s ease;
+}
+a:hover { background: var(--accent); }
+a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+</style>
+</head>
+<body>
+<main>
+  <p class="label">Error 404 · Signal lost</p>
+  <h1>Page not found. <em>Let’s get you back.</em></h1>
+  <svg viewBox="0 0 680 56" preserveAspectRatio="none" aria-hidden="true">
+    <path class="base" d="M0 28 H260 q8 -6 16 0 H300 l5 4 l7 -24 l8 36 l5 -16 H372 q12 -9 24 0 H680"/>
+    <path class="beat" pathLength="1000" d="M0 28 H260 q8 -6 16 0 H300 l5 4 l7 -24 l8 36 l5 -16 H372 q12 -9 24 0 H680"/>
+  </svg>
+  <p>The page you’re looking for doesn’t exist, or it has moved. Everything else is one click away.</p>
+  <a href="/">Back to the portfolio <span aria-hidden="true">↗</span></a>
+</main>
+</body>
+</html>
